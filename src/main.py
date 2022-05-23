@@ -127,8 +127,8 @@ def Symptoms():
             print(QL['Symptoms'][5] + pain_point[0] + QL['Symptoms'][7])   # 이제 얼마나 아픈지 ~
             user_said = input("답변: ")
                               
-            user_said = nlp.nlp_number(user_said, dic)    
-            print(f"통증 강도: {user_said}")
+            severity = nlp.nlp_number(user_said, dic)    
+            print(f"통증 강도: {severity}")
             
             print("\n")
             print(QL['Symptoms'][8])    # 이 부위가 어떻게 ~
