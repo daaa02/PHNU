@@ -78,6 +78,7 @@ def Greeting():
     print("\n")
     print(QL['Greeting'][0])
     user_said = input("답변: ")
+    
     user_said = nlp.nlp_answer(user_said, dic)
     print(f"답변: {user_said}")
     
@@ -93,8 +94,10 @@ def Symptoms():
     while True:
         print("\n")
         print(QL['Symptoms'][0])
-        user_said = input("답변: ")     
-        print(f"답변: {user_said}") 
+        user_said = input("답변: ")    
+         
+        user_said = nlp.nlp_answer(user_said, dic)
+        print(f"답변: {user_said}")
         
         if user_said == "네":
             print("\n")
@@ -450,7 +453,7 @@ def Medicine():
         return Medicine()
     
     print("\n")
-    print(QL['Medicine'[2]])    # 그 외에 드시고 있는 ~
+    print(QL['Medicine'][2])    # 그 외에 드시고 있는 ~
     user_said = input("답변: ")
     
     medicine = nlp.nlp_medicine(user_said)
