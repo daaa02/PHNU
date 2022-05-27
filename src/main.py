@@ -1,5 +1,3 @@
-from email.mime import audio
-from msilib.schema import TextStyle
 from ibm_watson import AssistantV2
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 
@@ -15,14 +13,13 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from question_list import question_list
 from connect import Connection
 from NLP import NLP, Dictionary
-# from speech_to_text import speech_to_text
+from speech_to_text import speech_to_text
 from text_to_speech import TextToSpeech
 
 connect = Connection()
 nlp = NLP()
 dic = Dictionary()
 audio = TextToSpeech()
-# audio = TextToSpeech()
 QL = question_list
 
 def text_to_speech(string):
@@ -32,15 +29,14 @@ def text_to_speech(string):
                 <voice name='WOMAN_READ_CALM'><prosody rate='slow'>{string}<break time='500ms'/></prosody></voice>\
                 </speak>", filename)  # tts 파일 생성 (*break time: 문장 간 쉬는 시간)
     audio.play(filename, 'local', '-1000', False)  # tts 파일 재생
+    audio.play(filename="PHNU/trigger.wav", out='local', volume=-1000, background=False)
 
 
 # 0. Greeting: 문진 시작
 def Greeting():
     print("\n")
-    a = QL['Greeting'][0]
-    text_to_speech(a)
-    audio.play(filename="trigger.wav", out='local', volume=-1000, background=False)
-    user_said = input("답변: ")
+    text_to_speech(QL['Greeting'][0])
+    user_said = input()
     
     user_said = nlp.nlp_answer(user_said, dic)
     print(f"답변: {user_said}")
@@ -56,7 +52,7 @@ def Greeting():
 def Symptoms():        
     while True:
         print("\n")
-        print(QL['Symptoms'][0])
+        text_to_speech(QL['Symptoms'][0])
         user_said = input("답변: ")    
          
         user_said = nlp.nlp_answer(user_said, dic)
@@ -64,7 +60,7 @@ def Symptoms():
         
         if user_said == "네":
             print("\n")
-            print(QL['Symptoms'][3])
+            text_to_speech(QL['Symptoms'][3])
             user_said = input("답변: ")                       
             
             pain_point = []                                                 # 리스트 생성      
@@ -74,7 +70,7 @@ def Symptoms():
             print(f"통증 부위: {pain_point} ")                  # 분석 결과 
             
             print("\n")
-            print(QL['Symptoms'][4])    # 다음 아픈 부위는 ~
+            text_to_speech(QL['Symptoms'][4])    # 다음 아픈 부위는 ~
             user_said = input("답변: ") 
             
             nlp.watson_position(user_said=user_said, list_name=pain_point)
@@ -92,14 +88,14 @@ def Symptoms():
                 break  
             
             print("\n")
-            print(QL['Symptoms'][5] + pain_point[0] + QL['Symptoms'][7])   # 이제 얼마나 아픈지 ~
+            text_to_speech(QL['Symptoms'][5] + pain_point[0] + QL['Symptoms'][7])   # 이제 얼마나 아픈지 ~
             user_said = input("답변: ")
                               
             severity = nlp.nlp_number(user_said, dic)    
             print(f"통증 강도: {severity}")
             
             print("\n")
-            print(QL['Symptoms'][8])    # 이 부위가 어떻게 ~
+            text_to_speech(QL['Symptoms'][8])    # 이 부위가 어떻게 ~
             user_said = input("답변: ") 
             
             symptoms = []
@@ -109,14 +105,14 @@ def Symptoms():
             n = len(pain_point)
             for i in range(0, n-1):   # 통증 개수만큼 반복 (n = '없다')  
                 print("\n")
-                print(QL['Symptoms'][6] + pain_point[i] + QL['Symptoms'][7]) 
+                text_to_speech(QL['Symptoms'][6] + pain_point[i] + QL['Symptoms'][7]) 
                 user_said = input("답변: ") 
                 
                 user_said = nlp.nlp_number(user_said, dic)    
                 print(f"통증 강도: {user_said}")
                 
                 print("\n")
-                print(QL['Symptoms'][8])
+                text_to_speech(QL['Symptoms'][8])
                 user_said = input("답변: ") 
                 
                 nlp.watson(user_said=user_said, list_name=symptoms)
@@ -125,7 +121,7 @@ def Symptoms():
                 i = i + 1      
             
             print("\n")    
-            print(QL['Symptoms'][9])
+            text_to_speech(QL['Symptoms'][9])
             user_said = input("답변: ")
             
             symptoms_other = []
@@ -146,7 +142,7 @@ def Symptoms():
         
         elif user_said == "아니오":
             print("\n")
-            print(QL['Symptoms'][1])    # 아프지 않으시다면 ~
+            text_to_speech(QL['Symptoms'][1])    # 아프지 않으시다면 ~
             user_said = input("답변: ")        
             
             symptoms = []
@@ -154,13 +150,13 @@ def Symptoms():
             print(f"증상: {symptoms}")
             
             print("\n")
-            print(QL['Symptoms'][2])    # 또 다른 증상이~
+            text_to_speech(QL['Symptoms'][2])    # 또 다른 증상이~
             user_said = input("답변: ")
             
             user_said = nlp.watson(user_said=user_said, list_name=symptoms)
             
             while True:            
-                if user_said == "없다":                    
+                if user_said == "아니오":                    
                     break
                 else:
                     user_said = input("답변: ") 
@@ -181,12 +177,12 @@ def Symptoms():
 # 2. Occurrence: 통증 발생 시기(년/월/일)            
 def Occurrence():
     print("\n")
-    print(QL['Occurrence'][0])
+    text_to_speech(QL['Occurrence'][0])
     user_said = input("답변: ")
     user_input = nlp.nlp_answer(user_said, dic)
     
     if user_input == "모름":
-        print(QL['Occurrence'][1])
+        text_to_speech(QL['Occurrence'][1])
         user_said = input("답변: ")
 
         tmp = []    
@@ -238,13 +234,13 @@ def Occurrence():
 # 3. Cause: 증상 발생 원인    
 def Cause():  
     print("\n")  
-    print(QL['Cause'][0])
+    text_to_speech(QL['Cause'][0])
     user_said = input("답변: ")
     print(f"사고와 관련 여부: {user_said}")
     
     if user_said == "네":
         print("\n")
-        print(QL['Cause'][1])
+        text_to_speech(QL['Cause'][1])
         user_said = input("답변: ")
         
         accident = []
@@ -253,7 +249,7 @@ def Cause():
         
         if accident == "교통사고":
             print("\n")
-            print(QL['Cause'][2])
+            text_to_speech(QL['Cause'][2])
             user_said = input("답변: ")
             
             user_said = nlp.nlp_answer(user_said, dic)
@@ -261,13 +257,13 @@ def Cause():
         
             if user_said == "아니오":
                 print("\n")
-                print(QL['Cause'][3])
+                text_to_speech(QL['Cause'][3])
                 user_said = input("답변: ")
                 user_said = nlp.nlp_answer(user_said, dic)
 
         elif accident == "넘어짐":
             print("\n")
-            print(QL['Cause'][4])
+            text_to_speech(QL['Cause'][4])
             user_said = input("답변: ")
             
             user_said = nlp.nlp_komoran(sentence=user_said)
@@ -275,7 +271,7 @@ def Cause():
             
         elif accident == "떨어짐":
             print("\n")
-            print(QL['Cause'][5])
+            text_to_speech(QL['Cause'][5])
             user_said = input("답변: ")
             
             user_said = nlp.nlp_number(user_said, dic)            
@@ -283,7 +279,7 @@ def Cause():
             
         elif accident == "구름":
             print("\n")
-            print(QL['Cause'][6])
+            text_to_speech(QL['Cause'][6])
             user_said = input("답변: ")
             
             user_said = nlp.nlp_number(user_said, dic) 
@@ -293,7 +289,7 @@ def Cause():
             pass
         
         print("\n")
-        print(QL['Cause'][7])
+        text_to_speech(QL['Cause'][7])
         user_said = input("답변: ")
         
         user_said = nlp.nlp_answer(user_said, dic)
@@ -312,13 +308,13 @@ def Cause():
 # 4. CheckUp: 검사 이력
 def CheckUp():
     print("\n")
-    print(QL['CheckUp'][0])
+    text_to_speech(QL['CheckUp'][0])
     user_said = input("답변: ")
     print(f"검사 이력: {user_said}")
     
     if user_said == "네":
         print("\n")
-        print(QL['CheckUp'][1])
+        text_to_speech(QL['CheckUp'][1])
         user_said = input("답변: ")
         
         user_said = nlp.nlp_answer(user_said, dic)
@@ -327,7 +323,7 @@ def CheckUp():
         while True:
             if user_said == "네":
                 print("\n")
-                print(QL['CheckUp'][2])
+                text_to_speech(QL['CheckUp'][2])
                 user_said = input("답변: ")
                 
                 checkup = nlp.nlp_komoran(user_said)
@@ -353,7 +349,7 @@ def CheckUp():
 # 5. Treatment: 치료 여부 
 def Treatment():
     print("\n")
-    print(QL['Treatment'][0])
+    text_to_speech(QL['Treatment'][0])
     user_said = input("답변: ")
     
     user_said = nlp.nlp_answer(user_said, dic)
@@ -361,7 +357,7 @@ def Treatment():
     
     if user_said == "네":
         print("\n")
-        print(QL['Treatment'][1])
+        text_to_speech(QL['Treatment'][1])
         user_said = input("답변: ")
         
         user_said = nlp.nlp_answer(user_said, dic)
@@ -370,7 +366,7 @@ def Treatment():
         while True:
             if user_said == "네":
                 print("\n")
-                print(QL['Treatment'][2])
+                text_to_speech(QL['Treatment'][2])
                 user_said = input("답변: ")
                 
                 treatment = nlp.nlp_komoran(user_said)   
@@ -396,7 +392,7 @@ def Treatment():
 # 6. Medicine: 복용중인 약
 def Medicine():
     print("\n")
-    print(QL['Medicine'][0])    # 현재 드시고 있는 ~
+    text_to_speech(QL['Medicine'][0])    # 현재 드시고 있는 ~
     user_said = input("답변: ")
     
     user_said = nlp.nlp_answer(user_said, dic)
@@ -404,7 +400,7 @@ def Medicine():
     
     if user_said == "네":
         print("\n")
-        print(QL['Medicine'][1])    # 지혈을 억제하는 ~
+        text_to_speech(QL['Medicine'][1])    # 지혈을 억제하는 ~
         user_said = input("답변: ")
         
         user_said = nlp.nlp_answer(user_said, dic)
@@ -418,7 +414,7 @@ def Medicine():
         return Medicine()
     
     print("\n")
-    print(QL['Medicine'][2])    # 그 외에 드시고 있는 ~
+    text_to_speech(QL['Medicine'][2])    # 그 외에 드시고 있는 ~
     user_said = input("답변: ")
     
     medicine = nlp.nlp_medicine(user_said)
@@ -430,7 +426,7 @@ def Medicine():
 # 7. Anamnesis: 과거 병력
 def Anamnesis():
     print("\n")
-    print(QL['Anamnesis'][0])
+    text_to_speech(QL['Anamnesis'][0])
     user_said = input("답변: ")
     
     anamnesis = nlp.nlp_komoran(user_said)
@@ -442,14 +438,14 @@ def Anamnesis():
 # 8. Surgery: 수술 이력
 def Surgery():
     print("\n")
-    print(QL['Surgery'][0])     # 예전에 수술이나 ~
+    text_to_speech(QL['Surgery'][0])     # 예전에 수술이나 ~
     user_said = input("답변: ")
     
     user_said = nlp.nlp_answer(user_said, dic)
     
     if user_said == "네":
         print("\n")
-        print(QL['Surgery'][1])     # 가장 최근에 수술 ~
+        text_to_speech(QL['Surgery'][1])     # 가장 최근에 수술 ~
         user_said = input("답변: ")
         
         surgery_point = []
@@ -457,7 +453,7 @@ def Surgery():
         print(f"수술 부위: {surgery_point}")
         
         print("\n")
-        print(QL['Surgery'][2])    # 그 다음 수술 ~
+        text_to_speech(QL['Surgery'][2])    # 그 다음 수술 ~
         user_said = input("답변: ")
         
         nlp.watson_position(user_said=user_said, list_name=surgery_point)
