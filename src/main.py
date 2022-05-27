@@ -20,59 +20,6 @@ nlp = NLP()
 dic = Dictionary()
 QL = question_list
 
-assistant, session_id = connect.assistant_connect('2403128d-0671-4f67-8a12-1c8999bf2256')
-
-def watson(user_said, list_name):
-    """
-    * user_said 으로부터 intents 추출하고, 리스트에 저장
-        : Watson Assistant -> Dialog -> Intents 
-    
-    * 현재 리스트 종류
-        : pain_point, symptoms, symptoms_other, occurraence, accident
-    """
-    response = assistant.message(
-                assistant_id = '2403128d-0671-4f67-8a12-1c8999bf2256',
-                session_id = session_id,
-                input = {
-                    'message_type': 'text',
-                    'text': user_said
-                }
-            ).get_result()['output']
-    
-    # list_name = []
-    [list_name.append(response["intents"][i]["intent"]) for i in range(len(response["intents"])) 
-     if response["intents"][i]["confidence"] > 0.5]
-   
-    return response, list_name
-
-
-def watson_time(user_said, list_name):
-    """
-    * 통증 발생 시기 질문에서만 사용
-    """
-    response = assistant.message(
-        assistant_id = '2403128d-0671-4f67-8a12-1c8999bf2256',
-        session_id = session_id,
-        input = {
-            'message_type': 'text',
-            'text': user_said
-        }
-    ).get_result()['output']
-                                       
-    for i in range(len(response["entities"])):
-        if response["entities"][i]["entity"] == "통증시기":
-            for j in range(len(response["entities"][i]["value"])):
-                if response["entities"][i]["value"][j] == '년':
-                    list_name.append(response["entities"][i]["value"])
-                elif response["entities"][i]["value"][j] == '월':
-                    list_name.append(response["entities"][i]["value"])
-                elif response["entities"][i]["value"][j] == '일':
-                    list_name.append(response["entities"][i]["value"])
-                    
-    return response, list_name
-    
-
-
 # 0. Greeting: 문진 시작
 def Greeting():
     print("\n")
@@ -104,15 +51,17 @@ def Symptoms():
             print(QL['Symptoms'][3])
             user_said = input("답변: ")                       
             
-            pain_point = []                                     # 리스트 생성            
-            watson(user_said=user_said, list_name=pain_point)   # watson intent 분석
-            print(f"통증 부위: {pain_point}")                   # 분석 결과 
+            pain_point = []                                                 # 리스트 생성      
+            position = []      
+            nlp.watson_position(user_said=user_said, list_name=pain_point)  # watson intent 분석
+            # position.append(nlp.nlp_komoran(user_said))
+            print(f"통증 부위: {pain_point} ")                  # 분석 결과 
             
             print("\n")
             print(QL['Symptoms'][4])    # 다음 아픈 부위는 ~
             user_said = input("답변: ") 
             
-            watson(user_said=user_said, list_name=pain_point)
+            nlp.watson_position(user_said=user_said, list_name=pain_point)
             print(f"통증 부위: {pain_point}")
             
             while True:            
@@ -121,7 +70,7 @@ def Symptoms():
                 else:
                     user_said = input("답변: ")
                     
-                    watson(user_said=user_said, list_name=pain_point)
+                    nlp.watson_position(user_said=user_said, list_name=pain_point)
                     print(f"통증 부위: {pain_point}")                    
                     continue
                 break  
@@ -138,7 +87,7 @@ def Symptoms():
             user_said = input("답변: ") 
             
             symptoms = []
-            watson(user_said=user_said, list_name=symptoms)
+            nlp.watson(user_said=user_said, list_name=symptoms)
             print(f"통증 양상: {symptoms}")
               
             n = len(pain_point)
@@ -154,7 +103,7 @@ def Symptoms():
                 print(QL['Symptoms'][8])
                 user_said = input("답변: ") 
                 
-                watson(user_said=user_said, list_name=symptoms)
+                nlp.watson(user_said=user_said, list_name=symptoms)
                 print(f"통증 양상: {symptoms}")
                 
                 i = i + 1      
@@ -164,16 +113,16 @@ def Symptoms():
             user_said = input("답변: ")
             
             symptoms_other = []
-            watson(user_said=user_said, list_name=symptoms_other)
+            nlp.watson(user_said=user_said, list_name=symptoms_other)
             print(f"통증 양상: {symptoms_other}")    
             
             while True:            
-                if user_said == "없다":                    
+                if user_said == "아니오":   # 없다
                     break
                 else:
                     user_said = input("답변: ")
                     
-                    watson(user_said=user_said, list_name=symptoms_other)
+                    nlp.watson(user_said=user_said, list_name=symptoms_other)
                     print(f"통증 양상: {symptoms_other}")
                     continue
                 break                 
@@ -185,14 +134,14 @@ def Symptoms():
             user_said = input("답변: ")        
             
             symptoms = []
-            watson(user_said=user_said, list_name=symptoms)
+            nlp.watson(user_said=user_said, list_name=symptoms)
             print(f"증상: {symptoms}")
             
             print("\n")
             print(QL['Symptoms'][2])    # 또 다른 증상이~
             user_said = input("답변: ")
             
-            user_said = watson(user_said=user_said, list_name=symptoms)
+            user_said = nlp.watson(user_said=user_said, list_name=symptoms)
             
             while True:            
                 if user_said == "없다":                    
@@ -200,7 +149,7 @@ def Symptoms():
                 else:
                     user_said = input("답변: ") 
                     
-                    watson(user_said=user_said, list_name=symptoms)
+                    nlp.watson(user_said=user_said, list_name=symptoms)
                     print(f"증상: {symptoms}")
                     continue
                 break     
@@ -225,7 +174,7 @@ def Occurrence():
         user_said = input("답변: ")
 
         tmp = []    
-        watson_time(user_said=user_said, list_name=tmp)
+        nlp.watson_time(user_said=user_said, list_name=tmp)
  
                                
         while True:
@@ -238,13 +187,13 @@ def Occurrence():
                 print("\n다시 말씀해 주세요.")
                 user_said = input("답변: ")
                 
-                watson_time(user_said=user_said, list_name=tmp)  
+                nlp.watson_time(user_said=user_said, list_name=tmp)  
                 continue              
             break
             
     elif user_input != "모름":             
         tmp = []
-        watson_time(user_said=user_said, list_name=tmp)
+        nlp.watson_time(user_said=user_said, list_name=tmp)
         
         while True:        
             if len(tmp) != 0:                  
@@ -257,7 +206,7 @@ def Occurrence():
                 print("\n다시 말씀해 주세요.")
                 user_said = input("답변: ")
                 
-                watson_time(user_said=user_said, list_name=tmp)  
+                nlp.watson_time(user_said=user_said, list_name=tmp)  
                 print(f"통증 발생 시기: {tmp}")
                 
                 continue              
@@ -283,7 +232,7 @@ def Cause():
         user_said = input("답변: ")
         
         accident = []
-        watson(user_said=user_said, list_name=accident)
+        nlp.watson(user_said=user_said, list_name=accident)
         print(f"사고 유형: {accident}")
         
         if accident == "교통사고":
@@ -465,7 +414,7 @@ def Medicine():
 # 7. Anamnesis: 과거 병력
 def Anamnesis():
     print("\n")
-    print(QL['Anamesis'][0])
+    print(QL['Anamnesis'][0])
     user_said = input("답변: ")
     
     anamnesis = nlp.nlp_komoran(user_said)
@@ -488,14 +437,14 @@ def Surgery():
         user_said = input("답변: ")
         
         surgery_point = []
-        surgery_point = watson(user_said=user_said, list_name=surgery_point)
+        nlp.watson_position(user_said=user_said, list_name=surgery_point)
         print(f"수술 부위: {surgery_point}")
         
         print("\n")
         print(QL['Surgery'][2])    # 그 다음 수술 ~
         user_said = input("답변: ")
         
-        surgery_point = watson(user_said=user_said, list_name=surgery_point)
+        nlp.watson_position(user_said=user_said, list_name=surgery_point)
         print(f"수술 부위: {surgery_point}")
         
         while True:            
@@ -503,7 +452,7 @@ def Surgery():
                 break
             else:
                 user_said = input("답변: ")
-                surgery_point = watson(user_said=user_said, list_name=surgery_point)
+                nlp.nlp.watson(user_said=user_said, list_name=surgery_point)
                 print(f"수술 부위: {surgery_point}")
                 continue
             break         
