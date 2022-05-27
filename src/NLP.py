@@ -1,7 +1,14 @@
-from distutils.command.clean import clean
+from typing import Text
 from konlpy.tag import Komoran
+from ibm_watson import AssistantV2
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+
+from connect import Connection
 
 komoran = Komoran()
+connect = Connection()
+
+assistant, session_id = connect.assistant_connect('2403128d-0671-4f67-8a12-1c8999bf2256')
 
 class Dictionary():
     def __init__(self):
@@ -34,7 +41,7 @@ class NLP():
         for k in range(len(dic.IDK)):
             if dic.IDK[k] in user_said:
                 answer = '모름'
-        print(answer)
+        # print(answer)
         return answer    
     
     
@@ -64,7 +71,7 @@ class NLP():
                 clean.append(nouns[i] + "약")
                 # print(f"clean = {clean}")   # 나 진짜 천잰가                
             answer = clean         
-        print(answer)
+        # print(answer)
         return answer
 
     def nlp_komoran(self, sentence):
@@ -76,5 +83,81 @@ class NLP():
             if nouns[i] not in stopwods:
                 clean.append(nouns[i])
             answer = clean
-        print(answer)
-        return answer
+        # print(answer)
+        return answer 
+    
+    
+    def watson(self, user_said, list_name):
+        """
+        * user_said 으로부터 intents 추출하고, 리스트에 저장
+            : Watson Assistant -> Dialog -> Intents 
+        """
+        response = assistant.message(
+                    assistant_id = '2403128d-0671-4f67-8a12-1c8999bf2256',
+                    session_id = session_id,
+                    input = {
+                        'message_type': 'text',
+                        'text': user_said
+                    }
+                ).get_result()['output']
+        
+        # list_name = []
+        [list_name.append(response["intents"][i]["intent"]) for i in range(len(response["intents"])) 
+        if response["intents"][i]["confidence"] > 0.5]
+    
+        return response, list_name
+
+
+    def watson_position(self, user_said, list_name):
+        """
+        * 통증 부위 질문에서만 사용
+        """
+        response = assistant.message(
+            assistant_id = '2403128d-0671-4f67-8a12-1c8999bf2256',
+            session_id = session_id,
+            input = {
+                'message_type': 'text',
+                'text': user_said
+            }
+        ).get_result()['output']
+                                        
+        for i in range(len(response["entities"])):
+            if response["entities"][i]["entity"] == "신체부위":
+                list_name.append(response["entities"][i]["value"])
+                        
+        return response, list_name
+
+
+    def watson_time(self, user_said, list_name):
+        """
+        * 통증 발생 시기 질문에서만 사용
+        """
+        response = assistant.message(
+            assistant_id = '2403128d-0671-4f67-8a12-1c8999bf2256',
+            session_id = session_id,
+            input = {
+                'message_type': 'text',
+                'text': user_said
+            }
+        ).get_result()['output']
+                                        
+        for i in range(len(response["entities"])):
+            if response["entities"][i]["entity"] == "통증시기":
+                for j in range(len(response["entities"][i]["value"])):
+                    if response["entities"][i]["value"][j] == '년':
+                        list_name.append(response["entities"][i]["value"])
+                    elif response["entities"][i]["value"][j] == '월':
+                        list_name.append(response["entities"][i]["value"])
+                    elif response["entities"][i]["value"][j] == '일':
+                        list_name.append(response["entities"][i]["value"])
+                        
+        return response, list_name
+    
+    
+    
+if __name__ == "__main__":
+    nlp = NLP()
+    text = "물리치료를 받았어요"
+    print(komoran.pos(text))
+    print(komoran.nouns(text))
+    print(nlp.nlp_komoran(text))
