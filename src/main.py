@@ -13,13 +13,14 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from question_list import question_list
 from connect import Connection
 from NLP import NLP, Dictionary
-from speech_to_text import speech_to_text
+# from speech_to_text import speech_to_text
 from text_to_speech import TextToSpeech
 
 connect = Connection()
 nlp = NLP()
 dic = Dictionary()
 audio = TextToSpeech()
+# audio = TextToSpeech()
 QL = question_list
 
 def text_to_speech(string):
@@ -29,14 +30,14 @@ def text_to_speech(string):
                 <voice name='WOMAN_READ_CALM'><prosody rate='slow'>{string}<break time='500ms'/></prosody></voice>\
                 </speak>", filename)  # tts 파일 생성 (*break time: 문장 간 쉬는 시간)
     audio.play(filename, 'local', '-1000', False)  # tts 파일 재생
-    audio.play(filename="PHNU/trigger.wav", out='local', volume=-1000, background=False)
+    audio.play('PNUH/trigger.wav', 'local', '-1000', False)
 
 
 # 0. Greeting: 문진 시작
 def Greeting():
     print("\n")
     text_to_speech(QL['Greeting'][0])
-    user_said = input()
+    user_said = input("답변: ")
     
     user_said = nlp.nlp_answer(user_said, dic)
     print(f"답변: {user_said}")
@@ -64,10 +65,10 @@ def Symptoms():
             user_said = input("답변: ")                       
             
             pain_point = []                                                 # 리스트 생성      
-            position = []      
+            # position = []      
             nlp.watson_position(user_said=user_said, list_name=pain_point)  # watson intent 분석
             # position.append(nlp.nlp_komoran(user_said))
-            print(f"통증 부위: {pain_point} ")                  # 분석 결과 
+            print(f"통증 부위: {pain_point}")                  # 분석 결과 
             
             print("\n")
             text_to_speech(QL['Symptoms'][4])    # 다음 아픈 부위는 ~
@@ -77,7 +78,7 @@ def Symptoms():
             print(f"통증 부위: {pain_point}")
             
             while True:            
-                if user_said == "없다":                    
+                if pain_point[-1] == "없다":                    
                     break
                 else:
                     user_said = input("답변: ")
@@ -103,7 +104,9 @@ def Symptoms():
             print(f"통증 양상: {symptoms}")
               
             n = len(pain_point)
-            for i in range(0, n-1):   # 통증 개수만큼 반복 (n = '없다')  
+            print(n)
+            print(pain_point)
+            for i in range(1, n-1):   # 통증 개수만큼 반복 (n = '없다')  
                 print("\n")
                 text_to_speech(QL['Symptoms'][6] + pain_point[i] + QL['Symptoms'][7]) 
                 user_said = input("답변: ") 
@@ -129,7 +132,7 @@ def Symptoms():
             print(f"통증 양상: {symptoms_other}")    
             
             while True:            
-                if user_said == "아니오":   # 없다
+                if symptoms_other == "아니오":   # 없다
                     break
                 else:
                     user_said = input("답변: ")
@@ -156,7 +159,7 @@ def Symptoms():
             user_said = nlp.watson(user_said=user_said, list_name=symptoms)
             
             while True:            
-                if user_said == "아니오":                    
+                if user_said == "없다":                    
                     break
                 else:
                     user_said = input("답변: ") 
@@ -243,8 +246,7 @@ def Cause():
         text_to_speech(QL['Cause'][1])
         user_said = input("답변: ")
         
-        accident = []
-        nlp.watson(user_said=user_said, list_name=accident)
+        accident = nlp.nlp_accident(user_said, dic)
         print(f"사고 유형: {accident}")
         
         if accident == "교통사고":
@@ -460,7 +462,7 @@ def Surgery():
         print(f"수술 부위: {surgery_point}")
         
         while True:            
-            if user_said == "없다":                    
+            if surgery_point == "없다":                    
                 break
             else:
                 user_said = input("답변: ")
@@ -485,4 +487,4 @@ def End():
 
 if __name__ == "__main__":
     print(connect.assistant_connect)
-    Greeting()
+    Cause()
