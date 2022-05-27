@@ -154,10 +154,3 @@ class NLP():
         return response, list_name
     
     
-    
-if __name__ == "__main__":
-    nlp = NLP()
-    text = "물리치료를 받았어요"
-    print(komoran.pos(text))
-    print(komoran.nouns(text))
-    print(nlp.nlp_komoran(text))
