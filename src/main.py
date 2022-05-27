@@ -1,3 +1,5 @@
+from email.mime import audio
+from msilib.schema import TextStyle
 from ibm_watson import AssistantV2
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 
@@ -14,16 +16,30 @@ from question_list import question_list
 from connect import Connection
 from NLP import NLP, Dictionary
 # from speech_to_text import speech_to_text
+from text_to_speech import TextToSpeech
 
 connect = Connection()
 nlp = NLP()
 dic = Dictionary()
+audio = TextToSpeech()
+# audio = TextToSpeech()
 QL = question_list
+
+def text_to_speech(string):
+    filename = "tts.wav"
+    print("\n" + string + "\n")
+    audio.tts_connection(f"<speak>\
+                <voice name='WOMAN_READ_CALM'><prosody rate='slow'>{string}<break time='500ms'/></prosody></voice>\
+                </speak>", filename)  # tts 파일 생성 (*break time: 문장 간 쉬는 시간)
+    audio.play(filename, 'local', '-1000', False)  # tts 파일 재생
+
 
 # 0. Greeting: 문진 시작
 def Greeting():
     print("\n")
-    print(QL['Greeting'][0])
+    a = QL['Greeting'][0]
+    text_to_speech(a)
+    audio.play(filename="trigger.wav", out='local', volume=-1000, background=False)
     user_said = input("답변: ")
     
     user_said = nlp.nlp_answer(user_said, dic)
