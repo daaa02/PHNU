@@ -170,7 +170,7 @@ def Symptoms():
                 break     
         
         else:
-            print("\n다시 말씀해 주세요.")
+            text_to_speech("\n다시 말씀해 주세요.")
             return Symptoms()        
         break    
     
@@ -199,7 +199,7 @@ def Occurrence():
                 print(f"통증 발생 시점: {occurrence} 전")
                 break            
             else:
-                print("\n다시 말씀해 주세요.")
+                text_to_speech("\n다시 말씀해 주세요.")
                 user_said = speech_to_text()
                 
                 nlp.watson_time(user_said=user_said, list_name=tmp)  
@@ -228,7 +228,7 @@ def Occurrence():
             break            
     
     else:
-        print("다시 말씀해 주세요.")
+        text_to_speech("다시 말씀해 주세요.")
         return Occurrence()        
 
     return Cause()
@@ -301,7 +301,7 @@ def Cause():
         pass
 
     else:
-        print("다시 말씀해 주세요.")
+        text_to_speech("다시 말씀해 주세요.")
         return Cause() 
     
     return CheckUp()
@@ -342,7 +342,7 @@ def CheckUp():
         pass
     
     else:
-        print("다시 말씀해 주세요.")
+        text_to_speech("다시 말씀해 주세요.")
         return CheckUp()
         
     return Treatment()
@@ -385,7 +385,7 @@ def Treatment():
         pass
     
     else:
-        print("다시 말씀해 주세요.")
+        text_to_speech("다시 말씀해 주세요.")
         return Treatment()
     
     return Medicine()
@@ -412,7 +412,7 @@ def Medicine():
         pass
     
     else:
-        print("다시 말씀해 주세요.")
+        text_to_speech("다시 말씀해 주세요.")
         return Medicine()
     
     print("\n")
@@ -475,13 +475,13 @@ def Surgery():
         pass
         
     else:
-        print("다시 말씀해 주세요.")
+        text_to_speech("다시 말씀해 주세요.")
         return Surgery()
     
     return End()
 
 def End():
-    print("문진이 종료되었습니다.")
+    text_to_speech("문진이 종료되었습니다.")
     sys.exit(0)
 
 
