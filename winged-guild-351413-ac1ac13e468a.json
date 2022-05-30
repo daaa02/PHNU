@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "winged-guild-351413",
+  "private_key_id": "ac1ac13e468a59d232769c3a79832ef1bb69f1c3",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC0uwGOoHDHklfl\nowJ//rYfdgu3NDa+00ccUGIBoOoY48Tf6Ly2y/AYy5+/xVBh5expCNx8RREZGQ3f\ng8lia2HizR+PVDqsbuhOdoubSA4Cr0t0vYG1Pvw3YN19Rcd/eLcs1sUwqVRxGCtS\naYatc3FyCTzYEb1StScY8MrHWF71hSLaN6m68q1lqpLlHj35UcOG/QjYCodpzXFT\nvvhvdotgLPLLiGAHV+IwBSriGkeDai4THBhOJpuleWt1+9Zlv/SJgi/AEGZBILMA\nkUk9qJFvVGsD/NaciESyW5uvoOu1GKBBVZVnvJjodkvVIV/aoqo+oEqfEnAVpmSl\nJUA8TKJtAgMBAAECggEADYiJW9BI0bD0MwZrXAFLSvzQcMYQqWZxxz1/sUaG8Rkx\nN2EarIeF8Z1h137jf4kzlEPtGsMjPiFhqBCaxmtrF4wrplR01k+xxppa5uRU5D+T\nI2lDarqOMWln/Ib6ouF7ufhVKMktQRDBwbiUNK3V22e0ritZ5XUaOeRiEt5bsf/H\nd+zUjD/CKIASrpKWvHXDpkEBf4dhVGMW1L7TJgnpFEH8AbptYC8ciTC3bHbzLPZf\n7rF87whfXdp6mLirEgEmdR9hLhcCV7T3rK+yNkdN/21KFi25MJSDvFSpu7Qq3XMH\n8JBg7NAwhfdRygAAp2eOeZQJTpeFdyTSpsCDTE8VUQKBgQDgNlJ2SIhGWBKP5ICf\nmHr4nHghWzoCzntP3KnNoTEm5nRIYMfM+WmVG72WFCChYtKXzwZutoO9qqib0YmI\nyBJjwfCqLleeS1nxhWas8CtOKCrlxJpbkG0/RkZYJ5AjBk+mwv0Ylrb095mi47dw\n+DP8tmG3SvEvDSzO+IR1xiXH1QKBgQDOWokhjNjrRywFQ5Tdas1zCwk1L4MjdiGh\nxhQadYkEsRCuMBiY+CcSP1QlqFGQ2TpLlo/M4YMT6BiyeL6UUQ/mDiFTNJjpaaUW\n5LP+FmBFTOKnUCO7o0uYsTUAvbj14K+01uEVE4bIlCWSyEQ1tBKc4m/t/Bw+Qn5X\npWu11uyUOQKBgQCiNQqhgkX8xjjfmwum6pSEigaq8ynb3+/8TgMWvfgmUXFs7398\n/i/xbPlSu0sEFs+OfnsD280hiXakDAq5Ry1uuF9Zb196KL9waPdoQ/TAfXTTd9HI\nTouKzFeV7UFs5WL4nXantFm2je67lo0fEKHjwTqedXxZcumo7sg9wFWS5QKBgENo\n3f1AxqftYxsBHcNLHXxkcYiXUc6my4vOakjOdok60okkmxR1lEXovDNlDeg0nk+N\nCsLSNICvREohGZjX9kqf+RD2ULGHWm/lHEt3wdFBsZUYn+OvD4X89aSdVau0z5FS\n1MqOy2wAwVl25Jlqjt4DNq9WuV85V46IMmx/nl85AoGBANAT5xM8XT7Lq/aGFGzc\n+2NLj5vp1GmvrYkeN5fiUDidVKFs7OQBUrwRFkER7fSJopzUttkHyu5rW3DQqyTl\n4dT36CIqi0uS9/lyttHbFrn1ZlwngOnFfaLr0MtP3t8yAiE+qkhWBss7QZuEGRUj\nib/4r5ElQaHEjlsGeaTbE9aL\n-----END PRIVATE KEY-----\n",
+  "client_email": "stt-dayoung@winged-guild-351413.iam.gserviceaccount.com",
+  "client_id": "102462420555556569617",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/stt-dayoung%40winged-guild-351413.iam.gserviceaccount.com"
+}
