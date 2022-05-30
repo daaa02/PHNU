@@ -33,8 +33,14 @@ def text_to_speech(string):
     audio.play('PNUH/trigger.wav', 'local', '-1500', False)
 
 
+# csv 저장 관련
+folder = "Data/"
+csv_file = open(f'{folder}/{uid}.csv', 'a', newline='', encoding = 'cp949')
+cw = csv.writer(csv_file)
+
+
 # 0. Greeting: 문진 시작
-def Greeting():
+def Greeting(uid):
     print("\n")
     text_to_speech(QL['Greeting'][0])
     user_said = speech_to_text()
@@ -487,4 +493,5 @@ def End():
 
 if __name__ == "__main__":
     print(connect.assistant_connect)
-    Greeting()
+    uid = input("uid 입력: ")
+    Greeting(uid)
